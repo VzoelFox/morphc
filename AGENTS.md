@@ -1,11 +1,11 @@
 # MorphC: The Reborn Native Interpreter
 
-**Status:** Awal Perjalanan (Rebirth Phase)
+**Status:** Iterasi 3 (AST Transformation)
 **Language:** C (C11 Standard)
 **Architect:** Vzoel Fox's
 **Engineer:** Jules
 
-Dokumen ini adalah satu-satunya sumber kebenaran untuk pengembangan `morphc`. Proyek ini adalah reinkarnasi dari `morphupgrade` dengan pendekatan yang lebih radikal: **Pure C, No Dependencies, Interpreter First.**
+Dokumen ini adalah satu-satunya sumber kebenaran untuk pengembangan `morphc`. Proyek ini adalah reinkarnasi dari `morphupgrade` dengan pendekatan yang lebih radikal: **Pure C, No Dependencies, AST-Based Interpreter.**
 
 ## 1. Filosofi
 *   **Efisien bukan Kecepatan:** Kode harus bersih, mudah dimengerti, dan hemat memori. Kecepatan eksekusi adalah bonus.
@@ -13,10 +13,11 @@ Dokumen ini adalah satu-satunya sumber kebenaran untuk pengembangan `morphc`. Pr
 *   **Berkesan:** Fokus pada pengalaman pengguna (Developer Experience) yang unik dengan sintaks Bahasa Indonesia.
 
 ## 2. Arsitektur Teknis
-MorphC adalah *Tree-Walk Interpreter* (awalnya) yang ditulis dalam C murni.
-*   **Lexer:** Mengubah source code `.fox` menjadi Token.
-*   **Parser:** Membaca Token dan membuat struktur eksekusi (atau langsung eksekusi untuk tahap awal).
-*   **Runtime:** Eksekusi langsung (tidak ada Virtual Machine bytecode untuk iterasi pertama).
+MorphC bertransformasi menjadi *Tree-Walk Interpreter* berbasis AST.
+*   **Lexer:** Source Code -> Tokens.
+*   **Parser:** Tokens -> Abstract Syntax Tree (AST).
+*   **Evaluator:** AST -> Execution.
+*   **Environment:** Penyimpanan variabel (Scope).
 
 ## 3. Standar Kode
 *   **Bahasa Pemrograman:** C (Standard C11).
@@ -32,10 +33,5 @@ MorphC adalah *Tree-Walk Interpreter* (awalnya) yang ditulis dalam C murni.
 *   `examples/`: Kode contoh Morph (`.fox`).
 *   `bin/`: Hasil kompilasi executable.
 
-## 5. Roadmap
-1.  **Iterasi 1:** Hello World (`tulis`).
-2.  **Iterasi 2:** Variabel & Tipe Data Dasar.
-3.  **Iterasi 3:** Kontrol Alur (`jika`, `ulang`).
-
----
-*Catatan: Jangan lupa bernafas. Coding itu seni.*
+## 5. Referensi
+*   Konsep AST dan COTC (Core of The Core) diadopsi dari `morphupgrade` (Greenfield).

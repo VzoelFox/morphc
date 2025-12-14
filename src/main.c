@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include "lexer.h"
-#include "interpreter.h"
+#include "parser.h"
+#include "evaluator.h"
 
 void print_usage(const char *prog_name) {
     printf("Penggunaan: %s <file_source.fox>\n", prog_name);
@@ -45,12 +45,18 @@ int main(int argc, char *argv[]) {
         return 1;
     }
 
-    // Inisialisasi Interpreter
-    init_interpreter(source);
+    // 1. Init & Parse
+    init_parser(source);
+    ASTNode *program = parse();
 
-    // Jalankan
-    run_interpreter();
+    // 2. Evaluate
+    init_evaluator();
+    evaluate(program);
 
+    // 3. Cleanup
+    cleanup_evaluator();
+    free_ast(program);
     free(source);
+
     return 0;
 }

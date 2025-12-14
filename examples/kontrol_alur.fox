@@ -1,0 +1,10 @@
+biar status = 1
+tulis "Cek Status..."
+
+jika status maka
+    tulis "Status Aktif!"
+    biar pesan = "Ini di dalam blok jika"
+    tulis pesan
+akhir
+
+tulis "Selesai"
