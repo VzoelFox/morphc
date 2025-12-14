@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <string.h>
 #include "env.h"
+#include "ast.h" // Need ASTNode definition for function
 
 // --- Value Helpers ---
 
@@ -14,8 +15,20 @@ Value make_number(int n) {
 Value make_string(const char *s) {
     Value v;
     v.type = VAL_STRING;
-    // Duplicate string to own the memory
     v.as.string = strdup(s);
+    return v;
+}
+
+Value make_function(ASTNode *decl) {
+    Value v;
+    v.type = VAL_FUNCTION;
+    v.as.function.declaration = decl;
+    return v;
+}
+
+Value make_null() {
+    Value v;
+    v.type = VAL_NULL;
     return v;
 }
 
@@ -23,13 +36,15 @@ void free_value(Value v) {
     if (v.type == VAL_STRING && v.as.string) {
         free(v.as.string);
     }
+    // Function declaration is part of AST, owned by AST, not Value.
 }
 
-// --- Environment Implementation (Simple Linked List) ---
+// --- Environment Implementation ---
 
-Environment* env_create() {
+Environment* env_create(Environment *parent) {
     Environment *env = malloc(sizeof(Environment));
     env->head = NULL;
+    env->parent = parent;
     return env;
 }
 
@@ -46,17 +61,23 @@ void env_free(Environment *env) {
 }
 
 void env_set(Environment *env, const char *key, Value value) {
-    // Check if update existing
+    // 1. Check if variable exists in current scope to update
     Entry *current = env->head;
     while (current) {
         if (strcmp(current->key, key) == 0) {
-            // Update value: free old, set new
             free_value(current->value);
             current->value = value;
             return;
         }
         current = current->next;
     }
+
+    // 2. If not in current, check parent?
+    // Usually assignment updates nearest scope. Declaration creates in current.
+    // Our 'biar' is declaration. So it always goes to current.
+    // But what about reassignment? e.g. x = 5 (without biar).
+    // We don't have assignment syntax yet, only 'biar'.
+    // So 'biar' ALWAYS creates/updates in local scope.
 
     // Create new entry
     Entry *new_entry = malloc(sizeof(Entry));
@@ -67,26 +88,23 @@ void env_set(Environment *env, const char *key, Value value) {
 }
 
 int env_get(Environment *env, const char *key, Value *out_value) {
-    Entry *current = env->head;
-    while (current) {
-        if (strcmp(current->key, key) == 0) {
-            if (out_value) {
-                // Return a copy (shallow copy for primitives, deep for string)
-                // For strings, we need to decide ownership.
-                // Currently, `Value` struct owns the string pointer.
-                // If we return, we probably want to return a COPY of the value for usage,
-                // OR a pointer to the value in the env.
-
-                // Let's implement deep copy for safety in retrieval to avoid double free issues
-                // if the caller frees the retrieved value.
-                *out_value = current->value;
-                if (current->value.type == VAL_STRING) {
-                    out_value->as.string = strdup(current->value.as.string);
+    Environment *current_env = env;
+    while (current_env) {
+        Entry *current = current_env->head;
+        while (current) {
+            if (strcmp(current->key, key) == 0) {
+                if (out_value) {
+                    *out_value = current->value;
+                    if (current->value.type == VAL_STRING) {
+                        out_value->as.string = strdup(current->value.as.string);
+                    }
+                    // Function is pointer copy (safe, AST owns it)
                 }
+                return 1;
             }
-            return 1; // Found
+            current = current->next;
         }
-        current = current->next;
+        current_env = current_env->parent;
     }
     return 0; // Not found
 }

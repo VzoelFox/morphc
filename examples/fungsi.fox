@@ -1,0 +1,25 @@
+fungsi sapa(nama)
+    tulis "Halo " + nama
+akhir
+
+biar orang = "Vzoel"
+sapa(orang)
+sapa("Jules")
+
+fungsi tambah(a, b)
+    kembali a + b
+akhir
+
+biar hasil = tambah(5, 7)
+tulis "Hasil Penjumlahan:"
+tulis hasil
+
+fungsi faktorial(n)
+    jika n <= 1 maka
+        kembali 1
+    akhir
+    kembali n * faktorial(n - 1)
+akhir
+
+tulis "Faktorial 5:"
+tulis faktorial(5)
