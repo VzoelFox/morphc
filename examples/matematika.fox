@@ -1,0 +1,17 @@
+biar x = 10
+biar y = 5
+
+tulis "Operasi Matematika:"
+tulis x + y
+tulis x * y
+tulis x - y
+tulis x / y
+
+tulis "Logika:"
+jika x > y maka
+    tulis "x lebih besar dari y"
+akhir
+
+jika x == 10 maka
+    tulis "x adalah 10"
+akhir
