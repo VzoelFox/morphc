@@ -4,7 +4,11 @@
 typedef enum {
     TOKEN_EOF,
     TOKEN_TULIS,
+    TOKEN_BIAR,
     TOKEN_STRING,
+    TOKEN_NUMBER,
+    TOKEN_IDENTIFIER,
+    TOKEN_EQUALS,
     TOKEN_UNKNOWN
 } TokenType;
 

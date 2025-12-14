@@ -1,0 +1,12 @@
+biar nama = "Vzoel"
+biar status = "Founder"
+biar level = 99
+
+tulis "Info User:"
+tulis nama
+tulis status
+tulis level
+
+biar nama = "Jules"
+tulis "User Baru:"
+tulis nama

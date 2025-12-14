@@ -48,6 +48,13 @@ Token next_token() {
         return (Token){TOKEN_EOF, NULL, line};
     }
 
+    // Single character tokens
+    if (peek() == '=') {
+        advance();
+        return make_token(TOKEN_EQUALS, "=", 1);
+    }
+
+    // String literals
     if (peek() == '"') {
         advance(); // Skip opening quote
         const char *start = &src[pos];
@@ -60,7 +67,19 @@ Token next_token() {
         return make_token(TOKEN_STRING, start, length);
     }
 
-    if (isalpha(peek())) {
+    // Numbers
+    if (isdigit(peek())) {
+        const char *start = &src[pos];
+        int length = 0;
+        while (isdigit(peek())) {
+            advance();
+            length++;
+        }
+        return make_token(TOKEN_NUMBER, start, length);
+    }
+
+    // Identifiers and Keywords
+    if (isalpha(peek()) || peek() == '_') {
         const char *start = &src[pos];
         int length = 0;
         while (isalnum(peek()) || peek() == '_') {
@@ -68,15 +87,19 @@ Token next_token() {
             length++;
         }
 
-        // Cek keywords
+        // Keywords Check
         if (length == 5 && strncmp(start, "tulis", 5) == 0) {
             return make_token(TOKEN_TULIS, start, length);
         }
+        if (length == 4 && strncmp(start, "biar", 4) == 0) {
+            return make_token(TOKEN_BIAR, start, length);
+        }
 
-        return make_token(TOKEN_UNKNOWN, start, length); // Identifier sementara dianggap unknown
+        return make_token(TOKEN_IDENTIFIER, start, length);
     }
 
-    // Skip unknown char
+    // Unknown
+    const char *start = &src[pos];
     advance();
-    return next_token();
+    return make_token(TOKEN_UNKNOWN, start, 1);
 }
