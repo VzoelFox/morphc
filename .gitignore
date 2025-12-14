@@ -1,0 +1,15 @@
+# C compilation artifacts
+*.o
+*.obj
+morphc
+bin/
+
+# Editor temporary files
+*.swp
+*~
+.vscode/
+.DS_Store
+
+# Python (just in case)
+__pycache__/
+*.pyc
